@@ -7,8 +7,7 @@ removed:
 | File | What it is |
 |---|---|
 | `CLAUDE.md` | Kernel: routes requests to agents and commands, lists data sources, sets operating rules |
-| `.claude/agents/` | `analyst` (verified numbers), `writer` (drafts only), `researcher` (sourced answers), `cfo` (read-only finance) |
-| `.claude/commands/` | `/daily-brief`, `/numbers`, `/decision` (writes an ADR into the brain) |
+| Agents and commands | Not here any more: the eight-role AI leadership team lives in the brain itself (`.claude/agents/`, `.claude/commands/` at the vault root). Symlink them into the cockpit |
 | `hooks/finance-gate.py` + `.claude/settings.example.json` | A PreToolUse hook that keeps the cfo read-only on a bank MCP server (allowlist, fail-closed) |
 | `tests/test_finance_gate.py` | Tests for the hook: `python3 -m unittest discover -s tests` |
 

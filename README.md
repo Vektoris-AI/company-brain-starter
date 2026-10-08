@@ -4,12 +4,12 @@
 
 A plain-Markdown knowledge base for a small team that both people (in
 Obsidian) and AI agents (in Claude Code) can read, keep in order and trust.
-It comes with a schema contract that tells agents how to write, three agent
-loops (ingest, query, lint), a link and frontmatter checker, and an optional
+It comes with a schema contract that tells agents how to write, an AI
+leadership team of eight role agents, three agent loops (ingest, query, lint), a link and frontmatter checker, and an optional
 local semantic search.
 
-Extracted from the brain we run our own 2-person AI studio on. Our content is
-removed; the structure, rules and tools are the ones we use.
+Extracted from the brain we run our own 2-person AI studio on. To show it working, it ships
+filled with a fictional example company and its AI leadership team.
 
 ## The problem it solves
 
@@ -43,21 +43,64 @@ CLAUDE.md                    Schema contract for agents: where things go, requir
 00_inbox/ … 90_archive/      Folders for humans (PARA): inbox, projects, areas, resources, archive
 30_knowledge/ 50_people/     Folders for agents: the wiki and its entities
 _raw/                        Immutable sources (transcripts, exports, PDFs)
-_meta/                       Decision records (ADRs), ingest log, conventions
+_meta/                       Decision records (ADRs), ingest log, conventions, glossary
 _index/                      Local search index (generated, git-ignored)
+.claude/agents/              The AI leadership team: eight role agents (CEO, COO, CFO, CMO, Sales, CTO, People, Legal)
+.claude/commands/            Their routines: /daily-brief, /ceo-weekly-review, /cfo-cash-check, … and /decision
 .claude/skills/              /ingest, /query, /lint
 tools/lint.py                Frontmatter, dead links, orphans, edits to _raw/ (standard library only)
 tools/embed.py, search.py    Optional: page-level embeddings via Ollama, cosine search
 .githooks/post-commit        Rebuilds the search index after commits that touch notes
-.obsidian/                   Minimal vault settings (new notes go to the inbox, links update on rename)
+.obsidian/                   Vault settings, including a pre-colored graph view
 tests/                       unittest suite for lint, embed and search
-examples/cockpit/            Optional: four agents and three commands that work on top of the brain
+examples/cockpit/            Optional: kernel template and a finance gate hook for running the agents from a separate ops folder
 ```
 
-Four fictional example pages (a customer, a knowledge page, a decision, a
-raw call note) are included so the graph is not empty and you can see links,
-sources and lint in action. They are marked as examples. Delete them once
-you have your own.
+## Meet the example company
+
+The vault ships full, so you can see what a company brain looks like after nine months of real
+use instead of staring at empty folders.
+
+**Kettlewell & Finch is a fictional example company.** It does not exist. Every person, client,
+partner, number, quote and event in it is invented (see `_meta/about-this-example.md`).
+
+- A 23-person, remote-first US agency that does marketing operations (CRM, automation, pipeline,
+  reporting) for B2B services and SaaS companies with 20 to 200 employees.
+- Founders Dana Kettlewell (CEO) and Marcus Finch (COO), sixteen clients and prospects, four partners.
+- About 215 linked notes: 17 projects, 46 area pages (one area per leadership role, each with its
+  routine and KPIs), 37 atomic knowledge pages, 18 decision records with revisit triggers,
+  31 raw sources (call notes, meeting notes, exports), SOPs, an archive and an inbox with agent
+  reports waiting for review.
+- Two contradictions are flagged on purpose (`needs-review`), the way the schema contract wants
+  them handled: the service catalog quotes a 3-month retainer minimum while ADR-004 says 6, and
+  the retros show pipeline sprints running 8 weeks against a 6-week promise.
+
+Good places to start reading: `20_areas/strategy/ai-leadership-team.md`,
+`20_areas/sales/pipeline.md`, `20_areas/operations/client-health-scorecard.md`,
+`_meta/ingest-log.md`.
+
+Every example note is tagged `example`. When you start your own brain, delete those notes, the
+files in `_raw/` and the folders under `10_projects/`, and keep the structure, tools and agents.
+
+## Your AI leadership team
+
+Eight agents in `.claude/agents/`, one per leadership role. Each one reads the brain, runs a fixed
+routine (a command in `.claude/commands/`) and writes its result as a draft into `00_inbox/`.
+A named human owns each role and decides.
+
+| Role | What it does | What it never does |
+|---|---|---|
+| CEO | Weekly review against the OKRs, proposes next week's decisions, drafts ADRs, lists decisions whose revisit trigger fired | Change a decision, set priorities, assign work |
+| COO | Delivery check: project health, stale pages, slipping sprints, scope creep, capacity | Reassign people, move deadlines, talk to clients |
+| CFO | Cash check: balance, runway in weeks, receivables, two forecast scenarios, reminder drafts | Move, approve or pay money (bank access is read-only, enforced by a hook) |
+| CMO | Content plan tied to brain pages, post drafts, positioning, sourced market research | Post, schedule, or name a client without written approval |
+| Head of Sales | Pipeline review, follow-up and proposal drafts, price and term checks against the catalog | Send anything, change a price, promise a start date |
+| CTO | Automation review, tool and AI-vendor checks, metric definitions, brain health | Change permissions, connect tools, touch client systems |
+| Head of People | Onboarding packs, 30-60-90 plans, role scorecards, workload signals | Send offers, set pay, store personal data |
+| Legal & Compliance | Contract checks against the playbook, privacy and AI-use questions, questions for counsel | Sign, accept terms, or call its output legal advice |
+
+`/daily-brief` combines the COO, Sales and CFO agents into one page before standup. All eight run at
+autonomy level 1: they write files, a human reviews the diff and commits.
 
 ## Set it up (about 15 minutes)
 
@@ -69,8 +112,8 @@ You need git, Python 3.9+, Claude Code and, if you want it, Obsidian.
    cp -R company-brain-starter ~/company-brain && cd ~/company-brain
    git init && git add -A && git commit -m "Start company brain"
    ```
-2. **Open it in Obsidian** ("Open folder as vault"). Look at the graph: four
-   example pages, linked.
+2. **Open it in Obsidian** ("Open folder as vault"). Open the graph view: the
+   example company, colored by folder.
 3. **Run the checks:**
    ```bash
    python3 tools/lint.py                       # 0 errors, 0 warnings
@@ -98,6 +141,9 @@ You need git, Python 3.9+, Claude Code and, if you want it, Obsidian.
 | Ingest | "/ingest these call notes" | Saves the source to `_raw/`, updates or creates atomic pages, links them both ways, flags contradictions, logs the ingest, runs lint, leaves the diff for you |
 | Query | "/query what do we know about this customer?" | Searches (semantic + grep), reads the full pages and their links, answers with `[[citations]]`, says so when the brain doesn't know |
 | Lint | "/lint" | Runs `tools/lint.py`, fixes mechanical issues, lists stale, unsourced, duplicate and contradictory pages in a report for you |
+
+The leadership roles use the same loops: they read with query, file sources with ingest, and
+the CTO runs lint. Try `/daily-brief` or `/cfo-cash-check` on the example data.
 
 By default agents write files and you commit (level 1 of the autonomy slider
 in `CLAUDE.md`). Raise autonomy per loop, and only once its checks have been

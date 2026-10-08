@@ -15,27 +15,43 @@ specialist agent or command, then merge the results. Requests unrelated to
 
 ## Agent registry
 
+The agents are the brain's AI leadership team (`<path-to-brain>/.claude/agents/`). Symlink that
+folder into this cockpit's `.claude/agents/` instead of copying it, so there is one version.
+
 | Agent | Role | Triggers |
 |---|---|---|
-| `analyst` | Verified metrics from databases and APIs | "sales", "usage", "traffic", "how many…" |
-| `writer` | Drafts: posts, emails, proposals. Never sends | "write", "draft", "post", "proposal" |
-| `researcher` | Market, competitor and customer research with sources | "research", "compare", "what does X do" |
-| `cfo` | Cash, burn, runway, costs, subscriptions, receipts. Bank access is read-only | "cash", "runway", "what does X cost us", "can we afford…" |
+| `ceo` | Priorities, OKRs, decision records, Friday review | "what should we focus on", "weekly review", "prepare a decision" |
+| `coo` | Delivery, capacity, client health | "delivery check", "at risk", "when can we start" |
+| `cfo` | Cash, runway, receivables, forecast. Bank access is read-only | "cash", "runway", "who owes us", "can we afford…" |
+| `cmo` | Positioning, content plan, campaigns, market research | "content plan", "draft a post", "what does competitor X do" |
+| `head-of-sales` | Pipeline, proposals, follow-ups. Drafts only | "pipeline", "follow-up", "proposal", "renewal" |
+| `cto` | Tools, data, automations, metric definitions | "automate", "which tools", "where does this number come from" |
+| `head-of-people` | Hiring, onboarding, team | "onboard", "scorecard", "hiring plan" |
+| `legal-compliance` | Contracts, privacy, AI-use policy checks | "check this contract", "is this tool allowed" |
 
-Boundary: the **analyst** owns product and platform KPIs; the **cfo** owns
-everything that runs through the bank account. "Revenue" in the sense of money
-received goes to the cfo.
+Boundary: the **cfo** owns everything that runs through the bank account; product and pipeline
+metrics belong to the role that owns the area (sales, marketing, ops), with definitions kept by
+the **cto**.
 
 Code work does **not** happen from the cockpit. Switch to the project folder
 (see project registry), where that project's own CLAUDE.md applies.
 
 ## Commands
 
+Symlinked from `<path-to-brain>/.claude/commands/`.
+
 | Command | Purpose |
 |---|---|
-| `/daily-brief` | Morning brief: today's plan, pipeline, numbers, cash, calendar, inbox |
-| `/numbers [scope]` | Verified metrics on demand |
-| `/decision <topic>` | Record a decision as an ADR in the company brain |
+| `/daily-brief` | Before standup: decisions needed, delivery, pipeline, cash |
+| `/ceo-weekly-review` | Friday: OKR movement, next week's decisions, fired revisit triggers |
+| `/coo-delivery-check` | Project health, stale pages, capacity |
+| `/cfo-cash-check` | Balance, runway in weeks, receivables, two scenarios |
+| `/cmo-content-plan` | Next month's posts tied to brain pages |
+| `/sales-pipeline-review` | Due deals, follow-up drafts, price and term checks |
+| `/cto-automation-review` | Broken automations, tools without DPA, stale pages |
+| `/people-onboarding <name>` | Onboarding pack for a new hire |
+| `/legal-contract-check <file>` | Contract vs. playbook, questions for counsel |
+| `/decision <topic>` | Record a decision as an ADR in the brain |
 
 ## Data layer (single source of truth: never duplicate)
 

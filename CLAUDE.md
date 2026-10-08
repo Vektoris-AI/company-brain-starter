@@ -85,6 +85,15 @@ Retrieval: `python3 tools/search.py "<question>"` (semantic, needs the local
 index) combined with grep for exact terms. Structure check:
 `python3 tools/lint.py` (or `--files <paths>` for just the pages you touched).
 
+## AI leadership team
+
+Eight role agents live in `.claude/agents/` (`ceo`, `coo`, `cfo`, `cmo`, `head-of-sales`, `cto`,
+`head-of-people`, `legal-compliance`), their routines in `.claude/commands/`. They follow this
+contract like any other agent: read the brain, write drafts to `00_inbox/`, flag contradictions,
+and never send, move money, sign or commit. Roster, human owners and boundaries:
+`20_areas/strategy/ai-leadership-team.md`. The pages of the fictional example company are tagged
+`example` (see `_meta/about-this-example.md`).
+
 ## Autonomy slider
 
 | Level | Agent may | Use when |
