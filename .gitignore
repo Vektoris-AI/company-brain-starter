@@ -1,0 +1,21 @@
+# OS and Python
+.DS_Store
+__pycache__/
+.pytest_cache/
+.venv/
+
+# Generated search index (rebuild with tools/embed.py; stays on your machine)
+_index/*
+!_index/.gitkeep
+
+# Obsidian per-device state
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache
+
+# Local secrets and checkouts never go into the brain
+_local/
+_workspace/
+.env
+.env.*
+.claude/settings.local.json

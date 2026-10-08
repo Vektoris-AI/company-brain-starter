@@ -1,0 +1,20 @@
+#!/bin/sh
+# Rebuild the semantic search index in the background when a commit touched
+# notes. Does not block the commit; output goes to _index/embed.log.
+# Enable once per clone:  git config core.hooksPath .githooks
+changed=$(git diff-tree --root --no-commit-id --name-only -r HEAD -- \
+    '00_inbox/*.md' '10_projects/*.md' '20_areas/*.md' '30_knowledge/*.md' \
+    '40_resources/*.md' '50_people/*.md' '_meta/*.md' 'tools/embed.py')
+[ -z "$changed" ] && exit 0
+
+ROOT="$(git rev-parse --show-toplevel)"
+PY="$ROOT/.venv/bin/python"
+[ -x "$PY" ] || PY="python3"
+if ! "$PY" -c "import numpy" 2>/dev/null; then
+    echo "post-commit: numpy not available, search index not rebuilt (see README)"
+    exit 0
+fi
+
+mkdir -p "$ROOT/_index"
+nohup "$PY" "$ROOT/tools/embed.py" >"$ROOT/_index/embed.log" 2>&1 &
+echo "post-commit: rebuilding search index in the background (_index/embed.log)"

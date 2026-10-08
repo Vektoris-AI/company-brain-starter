@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "deny": [
+      "mcp__yourbank__create_transfer",
+      "mcp__yourbank__create_bulk_transfer",
+      "mcp__yourbank__approve_request",
+      "mcp__yourbank__decline_request",
+      "mcp__yourbank__create_card",
+      "mcp__yourbank__update_card"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "mcp__yourbank__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/hooks/finance-gate.py\" || exit 2",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
